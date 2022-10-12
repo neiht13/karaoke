@@ -1,0 +1,80 @@
+{"data": [{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "KQL VTT & TTKD",
+  "sbd": "01",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}
+  ,{"gk":"tx","score1":3.5,"score2":2,"score3":2,"total":7.5},{"gk":"xt","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "DTC",
+  "sbd": "02",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5},{"gk":"xt","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "TP. Cao Lãnh",
+  "sbd": "03",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "TP. Sa Đéc",
+  "sbd": "04",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "TP. Hồng Ngự",
+  "sbd": "05",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Cao Lãnh",
+  "sbd": "06",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Tân Hồng",
+  "sbd": "07",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Tam Nông",
+  "sbd": "08",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Thanh Bình",
+  "sbd": "09",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Tháp Mười",
+  "sbd": "10",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Lấp Vò",
+  "sbd": "11",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Huyện Lai Vung",
+  "sbd": "12",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+},{
+  "hinhthuc": "Đơn ca/Song ca",
+  "tietmuc": "Tên bài hát",
+  "name": "Nguyễn Thị Thu Xuân",
+  "sbd": "13",
+  "scores": [{"gk":"pht","score1":3.5,"score2":2,"score3":2,"total":7.5}]
+}]}
