@@ -2,10 +2,12 @@ import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import {Avatar, Button, Card, Col, Input, Modal, Row, Tag} from "antd";
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from '@ant-design/icons';
-import * as macaddress from "macaddress";
+import axios from 'axios';
+
 import "./style.css"
 import karaoke from "./../../karaoke.json"
 const {Meta} = Card;
+
 const Record = (props) => (
     <tr>
         <td>{props.record.name}</td>
@@ -53,6 +55,7 @@ export default function Karaoke() {
         async function getRecords() {
             const response = await fetch(`http://localhost:5000/karaoke`);
 
+
             if (!response.ok) {
                 const message = `An error occured: ${response.statusText}`;
                 window.alert(message);
@@ -62,7 +65,52 @@ export default function Karaoke() {
             const records = await response.json();
             // setRecords(karaoke.data);
             setRecords(records);
+            await fetch(`https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find`,{
+                method: 'post',
+                mode:'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Request-Headers': '*',
+                    'Accept': '*/*',
+                    'api-key': '3T0AJq674kua5xCKYoZeWEAqbCdlgidtfqWxwJ0O5G0lzW1bD55xzwaXtllwSK2z',
+                },
+                body: data
+            }).then(function (response) {
+                console.log(JSON.stringify(response.data));
+            })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
+        var data = JSON.stringify({
+            "collection": "employees",
+            "database": "karaoke",
+            "dataSource": "Cluster0",
+            "projection": {}
+        });
+
+        var config = {
+            method: 'post',
+            url: 'https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin' : '*',
+                "crossdomain": true,
+                'api-key': '3T0AJq674kua5xCKYoZeWEAqbCdlgidtfqWxwJ0O5G0lzW1bD55xzwaXtllwSK2z',
+            },
+            crossdomain: true,
+            data: data
+        };
+
+        axios(config)
+            .then(function (response) {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
 
         getRecords();
 
