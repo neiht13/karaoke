@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import "./style.css"
 import karaoke from "./../../karaoke.json"
+
 const {Meta} = Card;
 
 const Record = (props) => (
@@ -38,8 +39,10 @@ export default function Karaoke() {
     };
 
     const handleOk = () => {
-        setIsModalOpen(false);
-        localStorage.setItem("bgk", inputBgk);
+        if(inputBgk) {
+            setIsModalOpen(false);
+            localStorage.setItem("bgk", inputBgk);
+        }
     };
 
     const handleCancel = () => {
@@ -50,10 +53,10 @@ export default function Karaoke() {
         if (!currentBgk) {
             setIsModalOpen(true);
         }
-    },[]);
+    }, []);
     useEffect(() => {
         async function getRecords() {
-            const response = await fetch(`http://localhost:5000/karaoke`);
+            const response = await fetch(`https://karaserver.onrender.com/karaoke`);
 
 
             if (!response.ok) {
@@ -65,9 +68,9 @@ export default function Karaoke() {
             const records = await response.json();
             // setRecords(karaoke.data);
             setRecords(records);
-            await fetch(`https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find`,{
+            await fetch(`https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find`, {
                 method: 'post',
-                mode:'no-cors',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Request-Headers': '*',
@@ -82,6 +85,7 @@ export default function Karaoke() {
                     console.log(error);
                 });
         }
+
         var data = JSON.stringify({
             "collection": "employees",
             "database": "karaoke",
@@ -94,7 +98,7 @@ export default function Karaoke() {
             url: 'https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find',
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin' : '*',
+                'Access-Control-Allow-Origin': '*',
                 "crossdomain": true,
                 'api-key': '3T0AJq674kua5xCKYoZeWEAqbCdlgidtfqWxwJ0O5G0lzW1bD55xzwaXtllwSK2z',
             },
@@ -111,7 +115,6 @@ export default function Karaoke() {
             });
 
 
-
         getRecords();
 
         return;
@@ -119,7 +122,7 @@ export default function Karaoke() {
 
     // This method will delete a record
     async function deleteRecord(id) {
-        await fetch(`http://localhost:5000/karaoke/${id}`, {
+        await fetch(`https://karaserver.onrender.com/karaoke/${id}`, {
             method: "DELETE"
         });
 
@@ -131,7 +134,7 @@ export default function Karaoke() {
     function recordList() {
         return records.map((record) => {
             let score = 0;
-            if(record.scores && record.scores.length >0) {
+            if (record.scores && record.scores.length > 0) {
                 if (currentBgk === "MC") {
                     record.scores.forEach(r => {
                         score = score + r.total;
@@ -145,14 +148,14 @@ export default function Karaoke() {
                 }
             }
             return (
-                <Col span={8} >
+                <Col span={8}>
                     <Link to={`/karaoke/edit/${record._id}`}>
                         <Card title={record.name} bordered={false}
                               style={{
                                   height: "200px",
                                   textAlign: "center",
                                   marginBottom: "8px",
-                                  borderRadius:"8px",
+                                  borderRadius: "8px",
                                   boxShadow: "#0066aa80 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px"
                               }}>
                             <div style={{
@@ -165,10 +168,10 @@ export default function Karaoke() {
                                 width: "100px",
                                 position: "absolute"
                             }}/>
-                            <Tag color="geekblue">{record.sbd}</Tag>
+                            <Tag color="geekblue" style={{marginRight: "4px"}}>{record.sbd}</Tag>
 
-                            <span style={{ fontWeight: "bold",color: "#0066aa", fontSize:'2em', }}>{score}</span>
-                            <span style={{fontSize: "0.75em"}}>điểm</span>
+                            <span style={{fontWeight: "bold", color: "#0066aa", fontSize: '2em',}}>{score}</span>
+                            <span style={{fontSize: "0.5em"}}>điểm</span>
                             <br/>
                             <strong>{record.tietmuc}</strong>
                             <br/>
@@ -185,12 +188,20 @@ export default function Karaoke() {
     return (
         <div>
             <Row>
-            <h3>Danh sách thí sinh</h3>&nbsp;
+                <h3>Danh sách thí sinh</h3>&nbsp;
                 {currentBgk === "MC" && <Link to={"/karaoke/chitiet"}><Button>Chi tiết</Button></Link>}
             </Row>
             <div className="card-wrapper">
-                <Modal title="Nhập tên ban giám khảo" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <Input placeholder="Ví dụ: PHT" onChange={e=>{setInputBgk(e.target.value)}}/>
+                <Modal title="Nhập tên ban giám khảo" open={isModalOpen} onOk={handleOk}
+                       maskClosable={false}
+                       footer={[
+                           <Button key="ok" onClick={handleOk}>
+                               OK
+                           </Button>]}
+                >
+                    <Input placeholder="Ví dụ: PHT" onChange={e => {
+                        setInputBgk(e.target.value)
+                    }}/>
                 </Modal>
                 <Row gutter={8}>
                     {recordList()}

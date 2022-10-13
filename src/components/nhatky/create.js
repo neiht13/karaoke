@@ -26,7 +26,7 @@ export default function Create() {
     // When a post request is sent to the create url, we'll add a new record to the database.
     const newPerson = { ...form };
 
-    await fetch("http://localhost:5000/nhatky/add", {
+    await fetch("https://karaserver.onrender.com/nhatky/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
