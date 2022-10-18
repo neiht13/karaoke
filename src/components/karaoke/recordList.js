@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {Avatar, Button, Card, Col, Input, Modal, Row, Tag} from "antd";
+import {Avatar, Button, Card, Col, Input, Modal, notification, Row, Select, Tag} from "antd";
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from '@ant-design/icons';
 import axios from 'axios';
 
 import "./style.css"
 import karaoke from "./../../karaoke.json"
+import {Option} from "antd/es/mentions";
 
 const {Meta} = Card;
 
@@ -30,93 +31,97 @@ const Record = (props) => (
 
 export default function Karaoke() {
     const [records, setRecords] = useState([]);
+    const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputBgk, setInputBgk] = useState();
-    let currentBgk = localStorage.getItem("bgk");
+    const [adminPass, setAdminPass] = useState();
+    let currentBgk = localStorage.getItem("bgk2");
 
     const showModal = () => {
         setIsModalOpen(true);
     };
 
+    const openNotification = () => {
+        notification.open({
+            message: 'Thông báo',
+            description:
+                'Tài khoản đang được đăng nhập thiết bị khác, vui lòng liên hệ quản trị.'
+        });
+    };
     const handleOk = () => {
-        if(inputBgk) {
+        if(inputBgk !== "Admin" && inputBgk !== "MC" ) {
+            let user = users.filter(u=>u.name === inputBgk);
+            if (!user[0].status) {
+                setIsModalOpen(false);
+                localStorage.setItem("bgk2", inputBgk);
+                handleStatus(user)
+            } else {
+                openNotification()
+            }
+        } else if (inputBgk === "MC"){
             setIsModalOpen(false);
-            localStorage.setItem("bgk", inputBgk);
+            localStorage.setItem("bgk2", inputBgk);
+        } else if (adminPass === "1234"){
+            setIsModalOpen(false);
+            localStorage.setItem("bgk2", inputBgk);
         }
     };
 
+    async function handleStatus(record) {
+        await fetch(`https://karaserver.onrender.com/users/update/${record[0]._id}`, {
+            method: "POST",
+            body: JSON.stringify({status: true}),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(() => {
+            getUsers()
+        })
+    }
     const handleCancel = () => {
         setIsModalOpen(false);
+    };
+    const handleSort = () => {
+        let result = records.sort((a, b) => {
+            let nameA = 0
+            a.scores.forEach(e=>{
+                nameA = nameA + e.total;
+            });
+            let nameB = 0
+            b.scores.forEach(e=>{
+                nameB = nameB + e.total;
+            });
+            if (nameA < nameB) {
+                return 1;
+            }
+            if (nameA > nameB) {
+                return -1;
+            }
+            return 0;
+        });
+        setRecords(result)
     };
     // This method fetches the records from the database.
     useEffect(() => {
         if (!currentBgk) {
             setIsModalOpen(true);
+        } else if(currentBgk === "MC") {
+            setIsModalOpen(true);
         }
     }, []);
+    async function getRecords() {
+        const response = await fetch(`https://karaserver.onrender.com/karaoke`);
+        const records = await response.json();
+        setRecords(records);
+    }
+    async function getUsers() {
+        const response = await fetch(`https://karaserver.onrender.com/users`);
+        const records = await response.json();
+        setUsers(records);
+    }
     useEffect(() => {
-        async function getRecords() {
-            const response = await fetch(`https://karaserver.onrender.com/karaoke`);
-
-
-            if (!response.ok) {
-                const message = `An error occured: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-
-            const records = await response.json();
-            // setRecords(karaoke.data);
-            setRecords(records);
-            await fetch(`https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find`, {
-                method: 'post',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Request-Headers': '*',
-                    'Accept': '*/*',
-                    'api-key': '3T0AJq674kua5xCKYoZeWEAqbCdlgidtfqWxwJ0O5G0lzW1bD55xzwaXtllwSK2z',
-                },
-                body: data
-            }).then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
-
-        var data = JSON.stringify({
-            "collection": "employees",
-            "database": "karaoke",
-            "dataSource": "Cluster0",
-            "projection": {}
-        });
-
-        var config = {
-            method: 'post',
-            url: 'https://data.mongodb-api.com/app/data-sgxvu/endpoint/data/v1/action/find',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                "crossdomain": true,
-                'api-key': '3T0AJq674kua5xCKYoZeWEAqbCdlgidtfqWxwJ0O5G0lzW1bD55xzwaXtllwSK2z',
-            },
-            crossdomain: true,
-            data: data
-        };
-
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
         getRecords();
-
+        getUsers()
         return;
     }, [records.length]);
 
@@ -129,17 +134,17 @@ export default function Karaoke() {
         const newRecords = records.filter((el) => el._id !== id);
         setRecords(newRecords);
     }
-
-    // This method will map out the records on the table
     function recordList() {
         return records.map((record) => {
             let score = 0;
+            let did = 0;
             if (record.scores && record.scores.length > 0) {
-                if (currentBgk === "MC") {
+                if (currentBgk === "MC" || currentBgk === "Admin") {
                     record.scores.forEach(r => {
                         score = score + r.total;
+                        if(r.total > 0) did = did + 1
                     })
-                    score = Math.round(score / record.scores.length * 10) / 10
+                    if (did > 0) score = Math.round(score / did * 10) / 10
                 } else {
                     let list = record.scores.filter(r => r.gk === currentBgk);
                     list && list.length > 0 && list.forEach(r => {
@@ -149,10 +154,10 @@ export default function Karaoke() {
             }
             return (
                 <Col span={8}>
-                    <Link to={`/karaoke/edit/${record._id}`}>
+                    <Link to={currentBgk !=="MC" ? `/karaoke/edit/${record._id}`:`/karaoke`}>
                         <Card title={record.name} bordered={false}
                               style={{
-                                  height: "200px",
+                                  height: "210px",
                                   textAlign: "center",
                                   marginBottom: "8px",
                                   borderRadius: "8px",
@@ -189,19 +194,34 @@ export default function Karaoke() {
         <div>
             <Row>
                 <h3>Danh sách thí sinh</h3>&nbsp;
-                {currentBgk === "MC" && <Link to={"/karaoke/chitiet"}><Button>Chi tiết</Button></Link>}
+                {currentBgk === "Admin" && <Link to={"/karaoke/chitiet"}><Button>Chi tiết</Button></Link>}
+                {/*<Button onClick={handleSort}>Sắp xếp</Button>*/}
             </Row>
             <div className="card-wrapper">
-                <Modal title="Nhập tên ban giám khảo" open={isModalOpen} onOk={handleOk}
+                <Modal title="Chọn tên ban giám khảo" open={isModalOpen} onOk={handleOk} closable={false}
                        maskClosable={false}
                        footer={[
                            <Button key="ok" onClick={handleOk}>
                                OK
                            </Button>]}
                 >
-                    <Input placeholder="Ví dụ: PHT" onChange={e => {
-                        setInputBgk(e.target.value)
-                    }}/>
+                    {/*<Input placeholder="Ví dụ: PHT" onChange={e => {*/}
+                    {/*    setInputBgk(e.target.value)*/}
+                    {/*}}/>*/}
+                    <Select style={{ width: "80%" }} allowClear onChange={e=>{setInputBgk(e)}}>
+                        {users.map(u=>{
+                            return(
+                                <Option value={u.name}>{u.name}</Option>
+                            )
+                        })}
+                        <Option value={"MC"}>MC</Option>
+                        <Option value={"Admin"}>Admin</Option>
+
+                    </Select>
+                    <hr/>
+                    {inputBgk === "Admin" && <Input placeholder="****" onChange={e => {
+                        setAdminPass(e.target.value)
+                    }}/>}
                 </Modal>
                 <Row gutter={8}>
                     {recordList()}

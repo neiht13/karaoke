@@ -26530,4 +26530,9 @@ div.ant-typography-edit-content.ant-typography-rtl {
   box-shadow: rgb(0 102 170 / 50%) 0px 1px 1px, rgb(0 0 0 / 7%) 0px 2px 2px, rgb(0 0 0 / 7%) 0px 4px 4px, rgb(0 0 0 / 7%) 0px 8px 8px, rgb(0 0 0 / 7%) 0px 16px 16px;
 }
 
+.ant-input {
+  border-radius: 5px;
+  border: 1px solid #0066AAAA;
+}
+
 /*# sourceMappingURL=antd.css.map*/
